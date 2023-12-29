@@ -1,4 +1,4 @@
-const chats = [
+export const chats = [
   {
     isGroupChat: false,
     users: [

@@ -6,6 +6,9 @@ import helmet from "helmet";
 import express from "express";
 import mongoose from "mongoose";
 
+import { chats } from "./data/data.js";
+
+dotenv.config();
 const PORT = process.env.PORT || 4040;
 const app = express();
 
@@ -21,4 +24,12 @@ app.use(express.json());
 
 app.listen(PORT, () => {
   console.log(`Server Running on Port ${PORT}`);
+});
+
+app.get("/api/chat", (req, res) => {
+  res.send({ chats });
+});
+app.get("/api/chat/:id", (req, res) => {
+  const chat = chats.find((c) => c._id === req.params.id);
+  res.send(chat);
 });
