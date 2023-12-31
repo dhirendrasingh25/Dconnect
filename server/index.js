@@ -7,6 +7,7 @@ import express from "express";
 import mongoose from "mongoose";
 
 import { chats } from "./data/data.js";
+import userRouter from "./routes/userRoutes.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 4040;
@@ -22,14 +23,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 app.use(express.json());
 
+async function dbConnection() {
+  await mongoose.connect(process.env.MONGO_URI);
+  console.log("Database Connected");
+}
+dbConnection().catch((err) => console.log(err));
+
 app.listen(PORT, () => {
   console.log(`Server Running on Port ${PORT}`);
 });
 
-app.get("/api/chat", (req, res) => {
-  res.send({ chats });
-});
-app.get("/api/chat/:id", (req, res) => {
-  const chat = chats.find((c) => c._id === req.params.id);
-  res.send(chat);
-});
+app.use("/api/user", userRouter);
