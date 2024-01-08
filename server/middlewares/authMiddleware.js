@@ -1,5 +1,4 @@
-import bcrypt from "bcryptjs";
-import User from "../models/userModel";
+import User from "../models/userModel.js";
 import JWT from "jsonwebtoken";
 
 const protect = async (req, res, next) => {

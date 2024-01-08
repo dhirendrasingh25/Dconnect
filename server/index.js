@@ -5,9 +5,9 @@ import bodyParser from "body-parser";
 import helmet from "helmet";
 import express from "express";
 import mongoose from "mongoose";
-
 import { chats } from "./data/data.js";
 import userRouter from "./routes/userRoutes.js";
+
 import { errorHandler, notFound } from "./middlewares/errorMiddleware.js";
 
 dotenv.config();
@@ -26,9 +26,8 @@ async function dbConnection() {
   console.log("Database Connected");
 }
 dbConnection().catch((err) => console.log(err));
-
-// app.use(notFound);
-// app.use(errorHandler);
+app.use(notFound);
+app.use(errorHandler);
 
 app.use("/user", userRouter);
 
