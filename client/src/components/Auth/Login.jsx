@@ -5,9 +5,11 @@ import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { Link } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import axios from "axios"
+import { useToast } from "@chakra-ui/react";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
+  const toast = useToast();
   const {
     register,
     handleSubmit,
@@ -24,9 +26,24 @@ const Login = () => {
       });
   
       console.log(response.data); 
-  
+      toast({
+        title: "Login Successful",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+      localStorage.setItem("userInfo", JSON.stringify(data));
       reset();
     } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
       console.log('Error occurred:', error);
     }
   };
