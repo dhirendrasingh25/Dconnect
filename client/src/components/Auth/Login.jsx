@@ -4,6 +4,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { Link } from 'react-router-dom';
 import { useForm } from "react-hook-form";
+import axios from "axios"
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -14,11 +15,21 @@ const Login = () => {
     reset
   } = useForm();
 
-  const formSubmit=async (data)=>{
-    console.log(data);
-
-    reset()
-  }
+  const formSubmit = async (data) => {
+    try {
+      const response = await axios.post('http://localhost:7070/user/login', data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      console.log(response.data); 
+  
+      reset();
+    } catch (error) {
+      console.log('Error occurred:', error);
+    }
+  };
   return (
     <div className='sm:w-[40%] sm:h-[70%] p-2  mt-24 sm:mt-0 rounded-lg bg-white'>
       <form onSubmit={handleSubmit(formSubmit)}>
@@ -60,7 +71,7 @@ const Login = () => {
                 placeholder='Enter Password'
               ></input>
               <button type="button" onClick={()=>setShowPassword(!showPassword)}>
-              {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+              {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
               </button>
             </div>
             {errors.password && (

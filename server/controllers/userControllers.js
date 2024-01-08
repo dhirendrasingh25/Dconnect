@@ -4,12 +4,13 @@ import { compareString, generateToken, hashString } from "../utils/index.js";
 
 export const registerUser = async (req, res, next) => {
   const { name, email, password, pic } = req.body;
+  // console.log(req.body);
 
-  if (!name || !email || !password) {
-    res.status(400);
-    throw new Error("Some Fields are Missing");
-  }
   try {
+    if (!name || !email || !password) {
+      res.status(400);
+      throw new Error("Some Fields are Missing");
+    }
     const userExist = await User.findOne({ email });
 
     if (userExist) {

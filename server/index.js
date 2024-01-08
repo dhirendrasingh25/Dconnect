@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 
 import { chats } from "./data/data.js";
 import userRouter from "./routes/userRoutes.js";
+import { errorHandler, notFound } from "./middlewares/errorMiddleware.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 4040;
@@ -17,9 +18,6 @@ app.use(cors());
 app.use(helmet());
 app.use(bodyParser.json());
 
-app.use(express.json({ limit: "10mb" }));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 app.use(express.json());
 
@@ -29,8 +27,11 @@ async function dbConnection() {
 }
 dbConnection().catch((err) => console.log(err));
 
+// app.use(notFound);
+// app.use(errorHandler);
+
+app.use("/user", userRouter);
+
 app.listen(PORT, () => {
   console.log(`Server Running on Port ${PORT}`);
 });
-
-app.use("/api/user", userRouter);

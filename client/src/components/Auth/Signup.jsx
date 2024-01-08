@@ -4,10 +4,13 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form";
+import axios from "axios"
+import { useToast } from "@chakra-ui/toast";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false)
-  const [passwordError, setPasswordError] = useState(null)
+  const toast = useToast();
+  const [pic, setPic] = useState();
   const {
     register,
     handleSubmit,
@@ -17,14 +20,119 @@ const Signup = () => {
   const navigate = useNavigate()
 
   const formSubmit=async (data)=>{
-    console.log(data);
+    
+    setPicLoading(true);
+    //  console.log(data);
     if(data.cpassword !== data.password){
-        setPasswordError("Password and Confirm Password does not match");
-        return
+      toast({
+        title: "Confirm Password and Password do not match",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setPicLoading(false);
+      return;
     }
-    reset()
-    navigate('/')
-  }  
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      const { data } = await axios.post(
+        "http://localhost:7070/user/register/r",
+        {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          pic: pic,
+        },
+        config
+      );
+      console.log(data);
+
+      toast({
+        title: "Registration Successful",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      reset()
+      navigate('/')
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      
+    }
+  
+    // try {
+    //   const response = await axios.post('', data, {
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //   });
+    //   console.log(response.data); 
+      
+    // } catch (error) {
+    //   console.log('Error occurred:', error);
+    //   setPasswordError("Email Already Exists")
+    // }
+    
+  } 
+  const postDetails = (pics) => {
+    
+    if (pics === undefined) {
+      toast({
+        title: "Please Select an Image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+    console.log(pics);
+    if (pics.type === "image/jpeg" || pics.type === "image/png" || pics.type === "image/jpg" || pics.type === "image/svg") {
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "Dconnect");
+      data.append("cloud_name", "dzpmwlc9b");
+      fetch("https://api.cloudinary.com/v1_1/dzpmwlc9b/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setPic(data.url.toString());
+          console.log(data.url.toString());
+          setPicLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          
+        });
+    } else {
+      toast({
+        title: "Please Select an Image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      
+      return;
+    }
+  }; 
   return (
     <div className='sm:w-[40%] sm:h-[70%] p-2 mt-24 sm:mt-0 rounded-lg bg-white'>
     <form onSubmit={handleSubmit(formSubmit)}>
@@ -91,7 +199,7 @@ const Signup = () => {
                 placeholder='Enter Password'
               ></input>
               <button type="button" onClick={()=>setShowPassword(!showPassword)}>
-              {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+              {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
               </button>
             </div>
             
@@ -113,7 +221,7 @@ const Signup = () => {
                 placeholder='Enter Password'
               ></input>
               <button type='button' onClick={()=>setShowPassword(!showPassword)}>
-              {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+              {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
               </button>
             </div>
             
@@ -122,8 +230,7 @@ const Signup = () => {
             <div className='p-2 font-semibold'>Upload your Picture</div>
               <div className='flex flex-row'>
               <input
-                id="picture"
-                {...register("picture")}
+                onChange={(e) => postDetails(e.target.files[0])}
                 className='p-2 w-full outline-none text-gray-500'
                 type='file'
                 placeholder='Enter Password'
@@ -133,9 +240,6 @@ const Signup = () => {
 
           </div>
         </div>
-        {
-          passwordError && (<div className=' flex justify-center text-red-500 pb-2 font-semibold'>{passwordError}</div>)
-        }
         <div className=''>
             <button className='w-full text-xl p-2 rounded-lg text-white py-2 font-semibold bg-[#918fef]'>Signup</button> 
         </div>
