@@ -19,11 +19,11 @@ const Signup = () => {
   } = useForm();
   const navigate = useNavigate()
 
-  const formSubmit=async (data)=>{
+  const formSubmit=async (formData)=>{
     
-    setPicLoading(true);
+    
     //  console.log(data);
-    if(data.cpassword !== data.password){
+    if(formData.cpassword !== formData.password){
       toast({
         title: "Confirm Password and Password do not match",
         status: "warning",
@@ -31,7 +31,6 @@ const Signup = () => {
         isClosable: true,
         position: "bottom",
       });
-      setPicLoading(false);
       return;
     }
     try {
@@ -42,7 +41,7 @@ const Signup = () => {
       };
 
       const { data } = await axios.post(
-        "http://localhost:7070/user/register/r",
+        "http://localhost:7070/user/register/",
         {
           name: formData.name,
           email: formData.email,
@@ -115,7 +114,7 @@ const Signup = () => {
         .then((data) => {
           setPic(data.url.toString());
           console.log(data.url.toString());
-          setPicLoading(false);
+          
         })
         .catch((err) => {
           console.log(err);
