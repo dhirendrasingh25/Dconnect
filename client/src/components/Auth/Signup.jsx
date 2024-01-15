@@ -41,7 +41,7 @@ const Signup = () => {
       };
 
       const { data } = await axios.post(
-        "http://localhost:7070/user/register/",
+        "http://localhost:8080/api/v1/user/register",
         {
           name: formData.name,
           email: formData.email,
@@ -61,7 +61,7 @@ const Signup = () => {
       });
       localStorage.setItem("userInfo", JSON.stringify(data));
       reset()
-      navigate('/')
+      navigate('/login')
     } catch (error) {
       toast({
         title: "Error Occured!",

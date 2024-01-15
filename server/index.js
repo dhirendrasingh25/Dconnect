@@ -9,12 +9,18 @@ import { chats } from "./data/data.js";
 import userRouter from "./routes/userRoutes.js";
 
 import { errorHandler, notFound } from "./middlewares/errorMiddleware.js";
+import chatRouter from "./routes/chatRoutes.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 4040;
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
 app.use(helmet());
 app.use(bodyParser.json());
 
@@ -26,10 +32,12 @@ async function dbConnection() {
   console.log("Database Connected");
 }
 dbConnection().catch((err) => console.log(err));
-app.use(notFound);
-app.use(errorHandler);
 
-app.use("/user", userRouter);
+// app.use(notFound);
+// app.use(errorHandler);
+
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/chats", chatRouter);
 
 app.listen(PORT, () => {
   console.log(`Server Running on Port ${PORT}`);

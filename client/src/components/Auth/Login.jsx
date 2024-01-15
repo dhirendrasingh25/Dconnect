@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import axios from "axios"
 import { useToast } from "@chakra-ui/react";
@@ -16,16 +16,18 @@ const Login = () => {
     formState: { errors },
     reset
   } = useForm();
+  
+  const navigate = useNavigate();
 
   const formSubmit = async (data) => {
     try {
-      const response = await axios.post('http://localhost:7070/user/login', data, {
+      const response = await axios.post('http://localhost:8080/api/v1/user/login', data, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
   
-      console.log(response.data); 
+      // console.log(response.data); 
       toast({
         title: "Login Successful",
         status: "success",
@@ -35,6 +37,7 @@ const Login = () => {
       })
       localStorage.setItem("userInfo", JSON.stringify(data));
       reset();
+      navigate('/')
     } catch (error) {
       toast({
         title: "Error Occured!",
