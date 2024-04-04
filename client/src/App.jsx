@@ -9,12 +9,11 @@ import Protected from './components/404/Protected';
 const App = () => {
   return (
     <>
-    <Router>
+    
       <Routes>
         <Route path='/' element={
-          <Protected>
+      
               <HomePage/> 
-          </Protected>
         } 
         />
         <Route path='/login' element={
@@ -29,7 +28,7 @@ const App = () => {
           } />
         <Route path='*' element={<NotFound />} />
       </Routes>
-    </Router>
+    
     </>
   )
 }
