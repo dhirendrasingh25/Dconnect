@@ -40,7 +40,7 @@ const ChatProvider = ({ children }) => {
   );
 };
 
-// export const ChatState = () => {
-//   return useContext(ChatContext);
-// };
+export const ChatState = () => {
+  return useContext(ChatContext);
+};
 export default ChatProvider;
